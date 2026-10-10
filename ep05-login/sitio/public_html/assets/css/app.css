@@ -1,0 +1,133 @@
+/*
+ * app.css — la hoja de OmarFerDev (08-oct-2026). Interior en tema claro con el menta de la marca de acento.
+ * Los tokens llevan un nombre por papel; el contraste de cada par de texto se midió antes
+ * (piso 4.5:1): --txt 19.2 y --sec 7.6 sobre blanco; --verde-d 5.3 sobre blanco y 5.0 sobre --bg; el texto negro sobre
+ * --verde, 10.8; --danger 6.6; --amber-d 5.0. El menta brillante (--verde) es SOLO de relleno: sobre blanco da 1.8.
+ * Cuando exista la tabla tema, este :root será el respaldo y se mantendrá igual a ella.
+ */
+
+/* 1. Lo primero: un elemento con display propio ignora el atributo hidden. */
+[hidden] { display: none !important; }
+/* Un texto solo para lectores de pantalla (un aviso que se anuncia sin ocupar lugar). */
+.solo-lector {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+:root {
+    --verde: #3DDC97;        /* relleno de acento (botón principal), con texto negro */
+    --verde-h: #34C987;      /* el mismo al pasar el ratón */
+    --verde-d: #157A50;      /* texto y enlaces en menta sobre claro */
+    --verde-wash: rgba(61, 220, 151, 0.12);
+    --sobre-verde: #0E0F12;  /* el texto sobre el relleno menta: fijo, no sigue a --txt (en acceso, --txt es claro) */
+    --bg: #F6F7F9;
+    --sup: #FFFFFF;
+    --sup-hover: #F0F2F5;
+    --sidebar-bg: #0E0F12;
+    --topbar-bg: #FFFFFF;
+    --txt: #0E0F12;
+    --sec: #4B5563;
+    --mut: #6B7280;
+    --bor: #E5E7EB;
+    --danger: #B42318;
+    --amber: #F59E0B;
+    --amber-d: #B45309;
+    --radio: 10px;
+    --radio-sm: 6px;
+    --h-top: 56px;
+    --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --fuente-mono: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+    margin: 0;
+    font-family: var(--fuente);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--txt);
+    background: var(--bg);
+}
+a { color: var(--verde-d); }
+img { max-width: 100%; height: auto; }
+
+/* 2. Botones */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 44px; padding: 0 18px;
+    font: inherit; font-weight: 600;
+    color: var(--txt); background: var(--sup);
+    border: 1px solid var(--bor); border-radius: var(--radio-sm);
+    cursor: pointer;
+}
+.btn:hover { background: var(--sup-hover); }
+.btn:focus-visible { outline: 3px solid var(--verde-d); outline-offset: 2px; }
+.btn-primario { color: var(--sobre-verde); background: var(--verde); border-color: var(--verde); }
+.btn-primario:hover { background: var(--verde-h); border-color: var(--verde-h); }
+.btn-peligro { color: #FFFFFF; background: var(--danger); border-color: var(--danger); }
+.btn-peligro:hover { background: #912018; border-color: #912018; }
+.btn:disabled { cursor: wait; }
+
+/* 3. El shell mínimo del interior (el menú lateral llega con los módulos) */
+.topbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    min-height: var(--h-top); padding: 8px 20px;
+    background: var(--topbar-bg); border-bottom: 1px solid var(--bor);
+}
+.topbar-marca { flex: none; display: flex; align-items: center; gap: 10px; font-family: var(--fuente-mono); font-weight: 700; }
+.topbar-marca img { width: 32px; height: 32px; border-radius: 8px; }
+/* En celular el nombre se recorta en un renglón: a 375 px, sin esto se encimaba 8 px sobre la marca (medido el 08-oct). */
+.topbar-usuario { display: flex; align-items: center; gap: 12px; min-width: 0; color: var(--sec); }
+.topbar-usuario span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar-usuario form { flex: none; margin: 0; }
+.contenido { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
+.tarjeta {
+    background: var(--sup); border: 1px solid var(--bor); border-radius: var(--radio);
+    padding: 24px;
+}
+.tarjeta h1 { margin: 0 0 8px; font-size: 1.6rem; }
+.tarjeta p { margin: 0; color: var(--sec); }
+
+/* 4. Modales y avisos (los crea nucleo.js). Escala: formularios 200 · alerta y confirmación 300 · proceso 400. */
+.modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    display: none; align-items: center; justify-content: center;
+    padding: 16px;
+    background: rgba(14, 15, 18, 0.6);
+}
+.modal-overlay.abierto { display: flex; }
+.modal-overlay.modal-capa-alta { z-index: 300; }
+.modal {
+    width: min(440px, 100%); max-height: 90vh; overflow: auto;
+    background: var(--sup); color: var(--txt);
+    border-radius: var(--radio); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+.modal-cab { display: flex; align-items: center; gap: 12px; padding: 18px 20px 6px; }
+.modal-cab h2 { margin: 0; font-size: 1.15rem; }
+.modal-cuerpo { padding: 6px 20px 8px; }
+.modal-cuerpo p { margin: 0 0 8px; }
+.modal-pie { display: flex; justify-content: flex-end; gap: 10px; padding: 12px 20px 18px; }
+.modal-icono {
+    flex: none; display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 50%;
+    font-weight: 700; color: #FFFFFF;
+}
+.modal-icono.error { background: var(--danger); }
+.modal-icono.exito { background: var(--verde-d); }
+.modal-icono.aviso { background: var(--amber-d); }
+.modal-icono.info { color: var(--verde-d); background: var(--verde-wash); }   /* un aviso que solo informa */
+.modal-lista { margin: 0; padding-left: 20px; }
+
+/* 5. Formularios */
+.campo { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.campo label { font-weight: 600; }
+.campo input {
+    width: 100%; min-height: 48px; padding: 0 14px;
+    font: inherit; color: var(--txt); background: var(--sup);
+    border: 1px solid var(--bor); border-radius: var(--radio-sm);
+}
+.campo input:focus { outline: 3px solid var(--verde-wash); border-color: var(--verde-d); }
+.campo-con-boton { display: flex; gap: 8px; }
+.campo-con-boton input { flex: 1; min-width: 0; }
+.ayuda { margin: 0; font-size: 0.9rem; color: var(--sec); }

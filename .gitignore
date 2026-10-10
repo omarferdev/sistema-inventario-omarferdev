@@ -1,0 +1,3 @@
+# Lo tuyo no se sube: tu env.php trae la contraseña de tu base y tus claves, y storage/ tus sesiones y registros.
+env.php
+storage/

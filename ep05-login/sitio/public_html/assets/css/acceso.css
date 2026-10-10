@@ -1,0 +1,156 @@
+/*
+ * acceso.css — la pantalla de entrar y la de cambiar la contraseña, con la marca Terminal de la serie: fondo casi
+ * negro y verde menta. Va DESPUÉS de app.css y solo redefine sus tokens para estas páginas (sin layout: la tabla tema
+ * no las alcanza). Los modales de estas páginas también van en oscuro: toman los mismos tokens.
+ * El fondo de estrellas es aparte (fondo-estrellas.css, que se carga solo si config acceso.pantalla.fondo lo pide);
+ * aquí viven sus colores (--cielo-*, --estrella*). Sin él, queda el fondo liso de abajo.
+ * Contraste medido el 08-oct (piso 4.5:1 en texto y 3:1 en iconos), contra la cara clara de la tarjeta (--sup-luz) y
+ * contra --sup: título 15.2 y 16.7 · tenue 6.4 y 7.0 · menta 9.3 y 10.2 · ámbar 7.6 y 8.4 · botón (negro sobre menta)
+ * 10.8 · iconos y ojo sobre el campo 7.5 · signo del icono de error 4.4.
+ */
+.pagina-acceso {
+    --bg: #0E0F12;
+    --sup: #15171C;
+    --sup-hover: #1B1F26;
+    --txt: #F5F7FA;
+    --sec: #9AA3AE;
+    --bor: #2A2E36;
+    --verde-d: #3DDC97;     /* aquí el menta SÍ va de texto: sobre el oscuro se lee */
+    --danger: #E5534B;
+    --amber-d: #F59E0B;     /* el ámbar de texto, claro sobre el oscuro */
+    --sup-luz: #1C2027;     /* la cara de la tarjeta donde le pega la luz (arriba) */
+    --canto-filo: #1F4A3A;  /* el canto de la tarjeta, pegado a ella (menta oscuro) */
+    --canto-base: #0E221B;  /* ... y abajo, donde ya no le llega la luz */
+    --cielo-arriba: #090A0F;
+    --cielo-abajo: #1B2735;
+    --estrella: #FFFFFF;
+    --estrella-acento: #3DDC97;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px 16px;
+    background: var(--bg);
+    background-image: radial-gradient(circle at 50% 0%, rgba(61, 220, 151, 0.10), transparent 60%);
+}
+
+/* 1. La tarjeta, encima del fondo, con profundidad FIJA (decisión de Omar, 08-oct): la luz le pega desde arriba (cara
+ *    más clara arriba, filo claro arriba y oscuro abajo), tiene grosor y flota (dos sombras suaves y el brillo menta).
+ *    Nunca se mueve, salvo su entrada.
+ *    El grosor (09-oct, decisión de Omar al verlo en video): un canto de 10 px teñido de menta, una sombra sólida por
+ *    píxel del filo a la base, sin hueco. El de antes (una sombra oscura de 6 px y un filo menta aparte) se leía como
+ *    una segunda línea bajo la tarjeta. */
+.acceso-tarjeta {
+    position: relative; z-index: 1;
+    width: min(420px, 100%);
+    padding: 36px 28px 24px;
+    background: linear-gradient(180deg, var(--sup-luz) 0%, var(--sup) 55%); color: var(--txt);
+    border: 1px solid rgba(61, 220, 151, 0.22); border-top-color: rgba(61, 220, 151, 0.45); border-radius: 18px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.07),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+        0 1px 0 var(--canto-filo),
+        0 2px 0 color-mix(in srgb, var(--canto-base) 11%, var(--canto-filo)),
+        0 3px 0 color-mix(in srgb, var(--canto-base) 22%, var(--canto-filo)),
+        0 4px 0 color-mix(in srgb, var(--canto-base) 33%, var(--canto-filo)),
+        0 5px 0 color-mix(in srgb, var(--canto-base) 44%, var(--canto-filo)),
+        0 6px 0 color-mix(in srgb, var(--canto-base) 56%, var(--canto-filo)),
+        0 7px 0 color-mix(in srgb, var(--canto-base) 67%, var(--canto-filo)),
+        0 8px 0 color-mix(in srgb, var(--canto-base) 78%, var(--canto-filo)),
+        0 9px 0 color-mix(in srgb, var(--canto-base) 89%, var(--canto-filo)),
+        0 10px 0 var(--canto-base),
+        0 18px 30px rgba(0, 0, 0, 0.45),
+        0 40px 80px rgba(0, 0, 0, 0.55),
+        0 0 60px rgba(61, 220, 151, 0.10);
+    animation: tarjeta-entra 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes tarjeta-entra { from { opacity: 0; transform: translateY(14px); } }
+.acceso-marca { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 22px; }
+.acceso-marca img { width: 64px; height: 64px; border-radius: 16px; box-shadow: 0 0 28px rgba(61, 220, 151, 0.22); }
+.acceso-marca span { font-family: var(--fuente-mono); font-size: 1.15rem; font-weight: 700; color: var(--verde-d); }
+/* El «_» de la marca parpadea como el cursor de una terminal. */
+.acceso-marca .acceso-cursor { animation: cursor-parpadea 1.1s steps(1, end) infinite; }
+@keyframes cursor-parpadea { 50% { opacity: 0; } }
+.acceso-tarjeta h1 { margin: 0 0 6px; font-size: 1.6rem; text-align: center; }
+.acceso-tarjeta .ayuda { margin-bottom: 24px; text-align: center; }
+
+/* 2. Los campos: etiqueta en mayúsculas, icono a la izquierda y el ojo dentro */
+.pagina-acceso .campo label { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sec); }
+.pagina-acceso .campo input { background: var(--bg); }
+.pagina-acceso .campo input::placeholder { color: var(--sec); opacity: 1; }
+.campo-icono { position: relative; }
+.campo-icono input { padding-left: 44px; }
+.campo-icono.con-ojo input { padding-right: 52px; }
+.campo-icono-izq {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--sec); pointer-events: none;
+}
+.campo-icono:focus-within .campo-icono-izq { color: var(--verde-d); }
+.campo-ojo {
+    position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 40px; padding: 0;
+    color: var(--sec); background: transparent;
+    border: 0; border-radius: var(--radio-sm);
+    cursor: pointer;
+}
+.campo-ojo:hover { color: var(--txt); }
+.campo-ojo:focus-visible { outline: 2px solid var(--verde-d); outline-offset: -2px; }
+.campo-ojo .ojo-ocultar,
+.campo-ojo[aria-pressed="true"] .ojo-ver { display: none; }
+.campo-ojo[aria-pressed="true"] .ojo-ocultar { display: block; }
+/* Las ayudas al escribir (acceso.js): el contador, la coincidencia y el aviso de Bloq Mayús. Vacías no ocupan lugar. */
+.campo-ayuda, .campo-aviso { margin: 0; font-size: 0.8rem; }
+.campo-ayuda { color: var(--sec); }
+.campo-ayuda.ok { color: var(--verde-d); }
+.campo-aviso { color: var(--amber-d); font-weight: 600; }
+.campo-ayuda:empty, .campo-aviso:empty { display: none; }
+
+/* El error que llegó sin JavaScript: con JavaScript, acceso.js lo oculta y lo enseña en el modal. */
+.acceso-error {
+    margin: 0 0 18px; padding: 10px 12px;
+    color: var(--txt); background: rgba(229, 83, 75, 0.12);
+    border: 1px solid var(--danger); border-radius: var(--radio-sm);
+}
+.acceso-error p { margin: 0; }
+.acceso-error p + p { margin-top: 4px; }
+
+/* 3. El botón, con su flecha y su halo */
+.acceso-enviar {
+    width: 100%; min-height: 48px; margin-top: 6px;
+    box-shadow: 0 0 0 1px rgba(61, 220, 151, 0.35), 0 8px 28px rgba(61, 220, 151, 0.28);
+    transition: box-shadow 0.2s ease;
+}
+.acceso-enviar:hover { box-shadow: 0 0 0 1px rgba(61, 220, 151, 0.55), 0 10px 36px rgba(61, 220, 151, 0.42); }
+.acceso-enviar .icono { transition: transform 0.2s ease; }
+.acceso-enviar:hover .icono { transform: translateX(3px); }
+/* En espera: el texto cambia (data-espera) y la flecha deja su lugar a un círculo que gira. */
+.acceso-enviar.cargando .icono { display: none; }
+.acceso-enviar.cargando::after {
+    content: ""; width: 16px; height: 16px;
+    border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+    animation: girar 0.7s linear infinite;
+}
+@keyframes girar { to { transform: rotate(360deg); } }
+
+/* 4. El pie: el enlace del olvido (un botón que abre su modal) y «Cancelar y salir» */
+.acceso-pie { margin: 18px 0 0; font-size: 0.9rem; color: var(--sec); text-align: center; }
+.acceso-enlace {
+    min-height: 44px; padding: 0 6px;
+    font: inherit; color: var(--verde-d); background: none; border: 0;
+    text-decoration: underline; text-decoration-color: rgba(61, 220, 151, 0.45); text-underline-offset: 3px;
+    cursor: pointer;
+}
+.acceso-enlace:hover { text-decoration-color: currentColor; }
+.acceso-enlace:focus-visible { outline: 2px solid var(--verde-d); outline-offset: 2px; border-radius: 4px; }
+form.acceso-pie .acceso-enlace { color: var(--sec); text-decoration-color: rgba(154, 163, 174, 0.45); }
+
+/* 5. Los modales, en oscuro como la página */
+.pagina-acceso .modal-overlay { background: rgba(5, 6, 8, 0.72); }
+.pagina-acceso .modal { border: 1px solid var(--bor); box-shadow: 0 0 40px rgba(61, 220, 151, 0.08), 0 24px 60px rgba(0, 0, 0, 0.6); }
+.pagina-acceso .modal-cuerpo { color: var(--sec); }
+/* Aquí el verde y el ámbar de los iconos son claros: su signo va en oscuro. */
+.pagina-acceso .modal-icono.exito, .pagina-acceso .modal-icono.aviso { color: var(--bg); }
+
+@media (prefers-reduced-motion: reduce) {
+    .acceso-enviar, .acceso-enviar .icono { transition: none; }
+    .acceso-tarjeta, .acceso-marca .acceso-cursor, .acceso-enviar.cargando::after { animation: none; }
+}

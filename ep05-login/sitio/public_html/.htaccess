@@ -1,0 +1,41 @@
+# public_html/.htaccess — OmarFerDev (08-oct-2026). Solo public_html es público; todo lo demás va a index.php.
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # HTTPS siempre, con el dominio ESCRITO (⛔ nunca HTTP_HOST, que manda el navegador).
+    # Tu dominio va aquí y en APP_URL de env.php, en minúsculas (el README lo explica).
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://TU-DOMINIO%{REQUEST_URI} [R=301,L]
+
+    # /.well-known/ sí pasa (la validación del certificado del dominio y security.txt).
+    RewriteRule ^\.well-known/ - [L]
+
+    # Nada que empiece con punto (.env, .git, .htaccess) ni respaldos, registros o textos sueltos.
+    RewriteRule (^|/)\. - [F,L]
+    RewriteRule \.(sql|bak|zip|log|md|ini|sh|txt|dist|lock)$ - [F,NC,L]
+
+    # Solo index.php se ejecuta: cualquier otro .php que alguien deje aquí, prohibido. La reescritura interna a
+    # index.php vuelve a pasar por aquí como «index.php» y la excluye la propia regla.
+    RewriteRule ^(?!index\.php$).+\.php$ - [F,NC,L]
+
+    # Lo que existe se sirve tal cual; lo demás, al front-controller.
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Refuerzo para todas las respuestas, assets incluidos. La CSP la emite PHP (y el CDN la reemplaza: vale la <meta>).
+    # HSTS ⛔ sin includeSubDomains: el dominio temporal es un subdominio compartido de Hostinger.
+    Header always set X-Frame-Options "DENY"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "no-referrer"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+    Header always set Cross-Origin-Resource-Policy "same-origin"
+    Header always set Strict-Transport-Security "max-age=31536000"
+    Header always unset X-Powered-By
+</IfModule>
